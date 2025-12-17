@@ -36,7 +36,7 @@ export class MockBackendInterceptor implements HttpInterceptor {
 
     // Lazy initialize dataset
     if (!this.events || this.events.length === 0) {
-      this.events = this.generateEvents(100);
+      this.events = this.generateEvents(5000);
       this.nextEventId = this.events.length + 1;
     }
 
