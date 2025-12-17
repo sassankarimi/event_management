@@ -1,0 +1,82 @@
+<!--
+  Template for the EventFormDialog component. Presents a reactive form
+  allowing users to create or edit a single event. Validation errors
+  are displayed using Angular Material's form field components. All
+  layout styling is handled by the associated SCSS file.
+-->
+
+<h2 mat-dialog-title>
+  {{ data ? 'Veranstaltung bearbeiten' : 'Neue Veranstaltung' }}
+</h2>
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="dialog-form">
+  <!-- Date input with future date validation -->
+  <mat-form-field appearance="outline">
+    <mat-label>Datum</mat-label>
+    <!--
+      Only allow selecting dates via the datepicker by making the input
+      read-only. Users can click the calendar toggle button (matSuffix)
+      to open the picker. Disabling typing avoids invalid formats and
+      simplifies validation logic.
+    -->
+    <input
+      matInput
+      [matDatepicker]="picker"
+      formControlName="date"
+      readonly
+    />
+    <!-- Provide a datepicker toggle button so the user can easily choose a date -->
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+    <mat-error *ngIf="form.controls.date.hasError('required')"
+      >Datum ist erforderlich</mat-error
+    >
+    <mat-error *ngIf="form.controls.date.hasError('futureDate')"
+      >Datum muss in der Zukunft liegen</mat-error
+    >
+  </mat-form-field>
+
+  <!-- Location input with autocomplete. Users can choose an existing
+       location from the dropdown or type a new one. -->
+  <mat-form-field appearance="outline">
+    <mat-label>Ort</mat-label>
+    <input
+      matInput
+      formControlName="location"
+      [matAutocomplete]="locationAuto"
+    />
+    <mat-autocomplete #locationAuto="matAutocomplete">
+      <mat-option
+        *ngFor="let loc of locations()"
+        [value]="loc"
+      >
+        {{ loc }}
+      </mat-option>
+    </mat-autocomplete>
+    <mat-error *ngIf="form.controls.location.hasError('required')"
+      >Ort ist erforderlich</mat-error
+    >
+  </mat-form-field>
+
+  <!-- Status dropdown. Only visible when editing an existing event. For new
+       events the status is automatically set to 'geplant' and the field is
+       hidden to avoid accidental changes. -->
+  <mat-form-field appearance="outline" *ngIf="data">
+    <mat-label>Status</mat-label>
+    <mat-select formControlName="status">
+      <mat-option value="geplant">geplant</mat-option>
+      <mat-option value="abgesagt">abgesagt</mat-option>
+      <mat-option value="erledigt">erledigt</mat-option>
+    </mat-select>
+    <mat-error *ngIf="form.controls.status.hasError('required')"
+      >Status ist erforderlich</mat-error
+    >
+  </mat-form-field>
+
+  <!-- Form actions -->
+  <div class="dialog-actions">
+    <button mat-button type="button" (click)="onCancel()">Abbrechen</button>
+    <button mat-raised-button color="primary" [disabled]="form.invalid" type="submit">
+      Speichern
+    </button>
+  </div>
+</form>

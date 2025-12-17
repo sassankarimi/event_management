@@ -1,0 +1,83 @@
+<div class="detail-container">
+  <div class="header-row">
+    <h3>Teilnehmer</h3>
+    <button
+      mat-icon-button
+      type="button"
+      class="close-button"
+      (click)="close()"
+      aria-label="Dialog schließen"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <table mat-table [dataSource]="participants()" class="mat-elevation-z1">
+    <!-- Name column -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Name</th>
+      <td mat-cell *matCellDef="let p">{{ p.name }}</td>
+    </ng-container>
+
+    <!-- Email column -->
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef>E-Mail</th>
+      <td mat-cell *matCellDef="let p">{{ p.email }}</td>
+    </ng-container>
+
+    <!-- Role column -->
+    <ng-container matColumnDef="role">
+      <th mat-header-cell *matHeaderCellDef>Rolle</th>
+      <td mat-cell *matCellDef="let p">{{ p.role }}</td>
+    </ng-container>
+
+    <!-- Actions column -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Aktion</th>
+      <td mat-cell *matCellDef="let p">
+        <button
+          mat-icon-button
+          color="warn"
+          aria-label="Teilnehmer entfernen"
+          matTooltip="Teilnehmer entfernen"
+          (click)="removeParticipant(p)"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+
+  <form
+    [formGroup]="form"
+    (ngSubmit)="addParticipant()"
+    class="participant-form"
+  >
+    <mat-form-field appearance="outline" class="participant-field">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="participant-field">
+      <mat-label>E-Mail</mat-label>
+      <input matInput formControlName="email" />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="participant-field">
+      <mat-label>Rolle</mat-label>
+      <mat-select formControlName="role">
+        <mat-option value="Teilnehmer">Teilnehmer</mat-option>
+        <mat-option value="Referent">Referent</mat-option>
+        <mat-option value="Gast">Gast</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button
+      mat-raised-button
+      color="primary"
+      [disabled]="form.invalid"
+      type="submit"
+    >
+      Hinzufügen
+    </button>
+  </form>
+</div>

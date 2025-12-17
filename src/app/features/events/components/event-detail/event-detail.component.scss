@@ -1,0 +1,40 @@
+$primary: #fbba00;
+$dark: #727777;
+$light: #b9bdbc;
+$white: #ffffff;
+
+.detail-container {
+  padding: 35px;
+  border: 1px solid $light;
+}
+
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  color: $dark;
+}
+
+.close-button {
+  margin-left: auto;
+}
+
+.participant-form {
+  margin-top: 16px;
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.participant-field {
+  flex: 1;
+  min-width: 150px;
+}
+
+// Apply our palette to the primary buttons inside this component
+:host ::ng-deep .mat-raised-button.mat-primary {
+  background-color: $primary;
+  color: $dark;
+}

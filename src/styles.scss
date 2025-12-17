@@ -1,1 +1,50 @@
-/* You can add global styles to this file, and also import other style files */
+/*
+  Global styles (keep minimal).
+  The feature-specific styling lives in component SCSS files.
+*/
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  /* Apply global dark background and white font colour */
+  background-color: #727777;
+  color: #ffffff;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+/* Colour palette overrides */
+:root {
+  --mat-sys-primary: #fbba00;
+}
+
+/* Buttons: apply custom yellow colour and white text */
+.mat-mdc-raised-button,
+.mat-mdc-button,
+.mat-mdc-icon-button {
+  background-color: #fbba00 !important;
+  color: #ffffff !important;
+}
+
+/* Toolbar inherits the page background and text colour */
+.mat-toolbar {
+  background-color: #727777 !important;
+  color: #ffffff !important;
+}
+
+/* Table background and row colours */
+/* Table background and ensure font colour stays white for readability */
+.mat-table,
+.table-container {
+  background-color: #b9bdbc;
+  color: #ffffff;
+}
+
+/* Target the button specifically when it is disabled */
+button[mat-raised-button]:disabled {
+  background-color: #d3d3d3 !important;
+  color: #808080 !important;
+}

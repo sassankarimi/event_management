@@ -1,0 +1,238 @@
+<mat-toolbar class="toolbar">
+  <!--Filter and action controls -->
+  <div class="ctrl-elements">
+    <button
+      mat-icon-button
+      (click)="openCreateDialog()"
+      aria-label="Neue Veranstaltung"
+      matTooltip="Neue Veranstaltung erstellen"
+    >
+      <mat-icon>add</mat-icon>
+    </button>
+    <span class="title">Veranstaltungen</span>
+    <span class="spacer"></span>
+    <!-- Group by select -->
+    <mat-form-field class="filter-field">
+      <mat-label>Gruppierung</mat-label>
+      <mat-select
+        [value]="groupBy"
+        (selectionChange)="updateGroupBy($event.value)"
+      >
+        <mat-option value="">Keine</mat-option>
+        <mat-option value="status">Status</mat-option>
+        <mat-option value="location">Ort</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Status filter -->
+    <mat-form-field class="filter-field">
+      <mat-label>Status</mat-label>
+      <mat-select
+        [value]="store.statusFilter()"
+        (selectionChange)="store.updateStatusFilter($event.value)"
+      >
+        <mat-option [value]="null">Alle</mat-option>
+        <mat-option value="geplant">geplant</mat-option>
+        <mat-option value="abgesagt">abgesagt</mat-option>
+        <mat-option value="erledigt">erledigt</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Location filter -->
+    <mat-form-field class="filter-field" appearance="fill">
+      <mat-label>Ort</mat-label>
+      <input
+        type="text"
+        matInput
+        [formControl]="locationControl"
+        [matAutocomplete]="locationAuto"
+      />
+      <mat-autocomplete
+        #locationAuto="matAutocomplete"
+        (optionSelected)="onLocationSelected($event.option.value)"
+      >
+        <!-- 'Alle' option resets the location filter. -->
+        <mat-option [value]="null">Alle</mat-option>
+        <mat-option *ngFor="let loc of filteredLocations()" [value]="loc">
+          {{ loc }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <!-- Search input -->
+    <mat-form-field class="search-field">
+      <mat-label>Suchen</mat-label>
+      <input
+        matInput
+        [value]="store.search()"
+        (input)="store.updateSearch($any($event.target).value)"
+      />
+    </mat-form-field>
+
+    <!-- Date range filters -->
+    <mat-form-field class="date-field">
+      <mat-label>Von</mat-label>
+      <input
+        matInput
+        [matDatepicker]="startPicker"
+        [value]="startDate"
+        (dateChange)="onStartDateChange($event.value)"
+        readonly
+      />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="startPicker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #startPicker></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field class="date-field">
+      <mat-label>Bis</mat-label>
+      <input
+        matInput
+        [matDatepicker]="endPicker"
+        [value]="endDate"
+        (dateChange)="onEndDateChange($event.value)"
+        readonly
+      />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="endPicker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #endPicker></mat-datepicker>
+    </mat-form-field>
+    <button
+      mat-icon-button
+      (click)="ResetFilters()"
+      aria-label="Filter zurücksetzen"
+      matTooltip="Filter zurücksetzen"
+    >
+      <mat-icon>clear</mat-icon>
+    </button>
+    <!-- Export button -->
+    <button
+      mat-icon-button
+      (click)="exportCsv()"
+      aria-label="Exportieren"
+      matTooltip="Veranstaltungen als CSV exportieren"
+    >
+      <mat-icon>download</mat-icon>
+    </button>
+  </div>
+</mat-toolbar>
+<!-- Group summaries -->
+@if (groups.length > 0) {
+<section class="group-summary" aria-label="Gruppenübersicht">
+  <h3 class="group-summary_title">Gruppenübersicht</h3>
+
+  <ul class="group-summary_list">
+    @for (g of groups; track g.key) {
+    <li class="group-summary_item">
+      <span class="group-summary_key"> {{ g.key.toLocaleUpperCase() }}: </span>
+
+      <span class="group-summary_meta">
+        <strong>{{ g.events.length }} </strong>
+        Veranstaltungen ,
+
+        <strong>{{ g.participantCount }}</strong>
+        Teilnehmer
+      </span>
+    </li>
+    }
+  </ul>
+</section>
+}
+<!-- Data table -->
+<div class="table-container">
+  <div class="loading-overlay" *ngIf="store.loading()" aria-live="polite">
+    <mat-spinner diameter="48"></mat-spinner>
+    <span class="loading-text">Veranstaltungen werden geladen…</span>
+  </div>
+  <table
+    mat-table
+    [dataSource]="store.events()"
+    matSort
+    [matSortDisableClear]="false"
+    (matSortChange)="onSort($event)"
+    class="mat-elevation-z1"
+    aria-label="Veranstaltungsliste"
+    [class.is-loading]="store.loading()"
+  >
+    <!-- Date column -->
+    <ng-container matColumnDef="date">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header="date">Datum</th>
+      <td mat-cell *matCellDef="let event">
+        {{ event.date | date: 'dd.MM.yyyy' }}
+      </td>
+    </ng-container>
+
+    <!-- Location column with inline editing -->
+    <ng-container matColumnDef="location">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header="location">Ort</th>
+      <td mat-cell *matCellDef="let event">
+        <mat-form-field class="location-input" appearance="fill">
+          <input
+            matInput
+            class=""
+            [value]="event.location"
+            (blur)="updateLocation(event, $any($event.target).value)"
+          />
+        </mat-form-field>
+      </td>
+    </ng-container>
+
+    <!-- Status column -->
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef>Status</th>
+      <td mat-cell *matCellDef="let event">
+        <mat-form-field class="status-select" appearance="fill">
+          <mat-select
+            [value]="event.status"
+            (selectionChange)="updateStatus(event, $event.value)"
+          >
+            <mat-option value="geplant">geplant</mat-option>
+            <mat-option value="abgesagt">abgesagt</mat-option>
+            <mat-option value="erledigt">erledigt</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </td>
+    </ng-container>
+
+    <!-- Participants count column -->
+    <ng-container matColumnDef="participants">
+      <th mat-header-cell *matHeaderCellDef>Teilnehmer</th>
+      <td mat-cell *matCellDef="let event">{{ event.participants.length }}</td>
+    </ng-container>
+
+    <!-- Info column with icon to open detail dialog -->
+    <ng-container matColumnDef="info">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let event">
+        <button
+          mat-icon-button
+          aria-label="Details anzeigen"
+          matTooltip="Veranstaltungsdetails anzeigen"
+          (click)="openDetail(event); $event.stopPropagation()"
+        >
+          <mat-icon>info</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <!-- Render rows -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: displayedColumns"
+      (dblclick)="openDetail(row)"
+    ></tr>
+  </table>
+
+  <!-- Paginator -->
+  <mat-paginator
+    [length]="store.total()"
+    [pageSize]="store.size()"
+    [pageIndex]="store.page()"
+    [pageSizeOptions]="[10, 25, 50]"
+    (page)="onPage($event)"
+  ></mat-paginator>
+</div>

@@ -1,0 +1,259 @@
+$primary: #fbba00;
+$bg: #727777;
+$table: #b9bdbc;
+$text: #ffffff;
+$darkText: #2b2b2b;
+
+:host {
+  display: block;
+}
+
+/*
+   Toolbar (responsive)
+ */
+.toolbar {
+  background-color: $bg;
+  color: $text;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+
+  width: 100%;
+  overflow-x: hidden;
+  height: auto;
+  min-height: 64px;
+  padding: 8px 12px;
+}
+.toolbar mat-form-field {
+  margin-top: 17px;
+}
+.toolbar .ctrl-elements {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  width: 100%;
+  min-width: 0;
+}
+
+.spacer {
+  display: none;
+}
+
+.toolbar .mat-icon-button {
+  color: $text;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+}
+
+.title {
+  margin-left: 8px;
+  font-weight: 600;
+  color: $text;
+  white-space: nowrap;
+}
+
+.filter-field,
+.search-field,
+.date-field {
+  min-width: 180px;
+}
+
+.search-field {
+  flex: 2 1 280px;
+  min-width: 220px;
+  max-width: 420px;
+}
+
+.date-field {
+  max-width: 160px;
+}
+
+@media (max-width: 700px) {
+  .toolbar .ctrl-elements {
+    justify-content: stretch;
+  }
+
+  .toolbar mat-form-field {
+    flex: 1 1 100%;
+    min-width: 0;
+    max-width: none;
+  }
+}
+
+.table-container {
+  width: 90%;
+  margin: 16px auto;
+  padding: 16px;
+
+  background-color: $bg;
+  border-radius: 6px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+table.mat-table {
+  width: 100%;
+  table-layout: fixed;
+  border-spacing: 0;
+  border-collapse: separate;
+}
+.table-container mat-form-field {
+  margin-top: 15px;
+}
+.mat-header-cell,
+.mat-cell {
+  padding: 0 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 13px;
+}
+
+.mat-header-row {
+  background-color: $table;
+  color: $darkText;
+  font-weight: 600;
+}
+
+/* Hover */
+.mat-row:hover {
+  background-color: $primary;
+  color: $darkText;
+  cursor: pointer;
+}
+
+.mat-column-location mat-form-field,
+.mat-column-status mat-form-field {
+  width: 100%;
+}
+
+.mat-column-location input {
+  width: 100%;
+  min-width: 0;
+}
+
+.status-select {
+  min-width: 0;
+}
+.mat-paginator {
+  width: 90%;
+  margin: 0 auto;
+  color: $darkText;
+}
+
+.mat-column-date {
+  width: 9%;
+  min-width: 70px;
+}
+
+.mat-column-location {
+  width: 18%;
+  min-width: 40px;
+}
+
+.mat-column-status {
+  width: 18%;
+  min-width: 90px;
+}
+
+.mat-column-participants {
+  width: 18%;
+  min-width: 90px;
+  text-align: center;
+}
+
+.mat-column-info {
+  width: 6%;
+  min-width: 52px;
+  text-align: center;
+}
+
+/*  Extra mobile tuning */
+
+@media (max-width: 700px) {
+  /* wenn es sehr eng wird: Ort/Status noch kompakter */
+  .mat-column-location {
+    width: 18%;
+    min-width: 90px;
+  }
+  .mat-column-status {
+    width: 16%;
+    min-width: 80px;
+  }
+}
+
+.mat-raised-button.mat-primary {
+  background-color: $primary;
+  color: $darkText;
+}
+.group-summary {
+  margin-top: 16px;
+  padding: 12px 16px;
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  width: 90%;
+  margin: auto;
+}
+
+.group-summary_title {
+  color: $primary;
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.group-summary_list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.group-summary_item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 4px 0;
+  font-size: 13px;
+  line-height: 23px;
+}
+
+.group-summary_key {
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.group-summary_meta {
+  font-size: 15px;
+  margin-left: 8px;
+}
+.group-summary_meta strong {
+  width: 1.5em;
+  margin-right: 0.5em;
+}
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.25);
+  z-index: 10;
+  border-radius: 6px;
+}
+.loading-text {
+  font-size: 20px;
+}
+table.is-loading {
+  pointer-events: none;
+  opacity: 0.5;
+}

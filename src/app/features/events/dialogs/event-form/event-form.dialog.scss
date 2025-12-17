@@ -1,0 +1,28 @@
+//
+// Styles for EventFormDialog. Utilises the common palette used in the
+// rest of the application. Keeping consistent spacing and alignment
+// ensures the dialog is neat and readable.
+$primary: #fbba00;
+$dark: #727777;
+$light: #b9bdbc;
+$white: #ffffff;
+
+.dialog-form {
+  padding: 0 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+// Override primary button to match our palette
+:host ::ng-deep .mat-raised-button.mat-primary {
+  background-color: $primary;
+  color: $dark;
+}
